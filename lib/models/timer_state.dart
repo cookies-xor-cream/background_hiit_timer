@@ -9,6 +9,7 @@ class TimerState {
   int currentInterval = 0;
   int currentMicroSeconds = 0;
   int intervalMicroSeconds = 0;
+  int totalRemainingMicroSeconds = 0;
   double volume = 80;
   bool changeVolume = false;
 
@@ -18,8 +19,10 @@ class TimerState {
       this.currentInterval,
       this.currentMicroSeconds,
       this.intervalMicroSeconds,
+      this.totalRemainingMicroSeconds,
       this.volume,
-      this.changeVolume);
+      this.changeVolume,
+    );
 
   TimerState.empty() {
     paused = false;
@@ -27,6 +30,7 @@ class TimerState {
     currentInterval = 0;
     currentMicroSeconds = 0;
     intervalMicroSeconds = 0;
+    totalRemainingMicroSeconds = 0;
     volume = 80;
     changeVolume = false;
   }
@@ -38,6 +42,7 @@ class TimerState {
       'currentInterval': currentInterval,
       'currentMicroSeconds': currentMicroSeconds,
       'intervalMicroSeconds': intervalMicroSeconds,
+      'totalRemainingSeconds': totalRemainingMicroSeconds,
       'volume': volume,
       'changeVolume': changeVolume,
     };
@@ -52,6 +57,7 @@ class TimerState {
       map['currentInterval'] ?? 0,
       map['currentMicroSeconds'] ?? 0,
       map['intervalMicroSeconds'] ?? 0,
+      map['totalRemainingSeconds'] ?? 0,
       volume,
       map['changeVolume'] ?? false,
     );
@@ -63,6 +69,7 @@ class TimerState {
     currentInterval = 0;
     currentMicroSeconds = intervals[0].time * secondsFactor;
     intervalMicroSeconds = intervals[0].time * secondsFactor;
+    totalRemainingMicroSeconds = intervals.fold(0, (previous, interval) => previous + interval.time) * secondsFactor;
     changeVolume = false;
   }
 
@@ -71,6 +78,7 @@ class TimerState {
       currentInterval++;
       currentMicroSeconds = intervals[currentInterval].time * secondsFactor;
       intervalMicroSeconds = intervals[currentInterval].time * secondsFactor;
+      totalRemainingMicroSeconds = intervals.sublist(currentInterval).fold(0, (previous, interval) => previous + interval.time) * secondsFactor;
       status = intervals[currentInterval].name;
     } else {
       currentMicroSeconds = 0;
